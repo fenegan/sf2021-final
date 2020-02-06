@@ -6,6 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
+use App\Entity\Ticket;
+use App\Entity\User;
+
 class SiteController extends AbstractController
 {
     /**
@@ -23,6 +26,20 @@ class SiteController extends AbstractController
     public function contact(Request $request)
     {
         return $this->render('site/contact.html.twig', [
+        ]);
+    }
+
+    /**
+     * @Route("/tickets/{username}", name="get_tickets")
+     */
+    public function tickets(Request $request, string $username)
+    {
+        $user = $this->getDoctrine()->getRepository(User::class)
+            ->findOneByUsername($username);
+        $rep = $this->getDoctrine()->getRepository(Ticket::class);
+        $tickets = $rep->findByUser($user);
+        return $this->render('site/tickets.html.twig', [
+            'tickets' => $tickets
         ]);
     }
 
